@@ -40,7 +40,7 @@ public class RecipeActivity extends AppCompatActivity implements StepsAdapter.On
         getSupportActionBar().setTitle(mRecipes.getName());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (findViewById(R.id.step_container)!=null){
+        if (findViewById(R.id.step_container) != null) {
             mTwoPane = true;
 
             fragmentManager = getSupportFragmentManager();
@@ -49,9 +49,9 @@ public class RecipeActivity extends AppCompatActivity implements StepsAdapter.On
         }
     }
 
-    private void setFragment(Steps step, int position) {
+    private void setFragment(Steps step) {
         fragmentManager.beginTransaction()
-                .replace(R.id.step_container, StepFragment.newInstance(step, position))
+                .replace(R.id.step_container, StepFragment.newInstance(step))
                 .commit();
     }
 
@@ -63,16 +63,16 @@ public class RecipeActivity extends AppCompatActivity implements StepsAdapter.On
 
     @Override
     public void onClickStep(Steps step, int position) {
-        if (mTwoPane){
-            setFragment(step, position);
+        if (mTwoPane) {
+            setFragment(step);
         } else {
-            StepActivity.start(this, mRecipes.getName(), mRecipes.getSteps(),position);
+            StepActivity.start(this, mRecipes.getName(), mRecipes.getSteps(), position);
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_widget,menu);
+        getMenuInflater().inflate(R.menu.menu_widget, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -83,7 +83,7 @@ public class RecipeActivity extends AppCompatActivity implements StepsAdapter.On
             case R.id.action_add_to_widget:
                 preferencesHelper.saveRecipeToPref(mRecipes);
                 BakingAppsWidgetService.startUpdatePlantWidgets(this);
-                Toast.makeText(this,"This recipe added to widget", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "This recipe added to widget", Toast.LENGTH_SHORT).show();
                 break;
             case android.R.id.home:
                 onBackPressed();
@@ -91,4 +91,5 @@ public class RecipeActivity extends AppCompatActivity implements StepsAdapter.On
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

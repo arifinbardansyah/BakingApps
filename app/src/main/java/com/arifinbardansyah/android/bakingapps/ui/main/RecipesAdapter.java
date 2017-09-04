@@ -69,7 +69,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipesV
                         .load(mRecipes.get(position).getImage())
                         .into(ivImage);
             } else {
-                ivImage.setImageResource(R.drawable.ic_book_black_24dp);
+                ivImage.setImageResource(R.drawable.chef);
             }
             tvName.setText(mRecipes.get(position).getName());
             String servings = mRecipes.get(position).getServings()+" serving(s)";

@@ -3,6 +3,7 @@ package com.arifinbardansyah.android.bakingapps.ui.step;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -18,7 +19,10 @@ import java.util.List;
 
 public class StepActivity extends AppCompatActivity {
 
+    public static final String CURRENT_FRAGMENT_POSITION = "currentfragmentposition";
+
     private FragmentManager fragmentManager;
+    private Fragment fragment;
 
     private List<Steps> mSteps;
     private int position;
@@ -38,18 +42,26 @@ public class StepActivity extends AppCompatActivity {
             position = getIntent().getIntExtra(Constants.EXTRA_POSITION, 0);
         }
 
-        getSupportActionBar().setTitle(recipeName);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         fragmentManager = getSupportFragmentManager();
 
-        setFragment(position);
+        if (savedInstanceState == null){
+            setFragment(position);
+        } else {
+            position = savedInstanceState.getInt(CURRENT_FRAGMENT_POSITION);
+        }
+
+        getSupportActionBar().setTitle(recipeName);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void setFragment(int position) {
-        fragmentManager.beginTransaction()
-                .replace(R.id.step_container, StepFragment.newInstance(mSteps.get(position), position))
-                .commit();
+        if (fragment==null) {
+            fragment = StepFragment.newInstance(mSteps.get(position));
+
+            fragmentManager.beginTransaction()
+                    .replace(R.id.step_container, fragment)
+                    .commit();
+        }
     }
 
     public static void start(Context context, String recipeName, ArrayList<Steps> steps, int
@@ -77,7 +89,6 @@ public class StepActivity extends AppCompatActivity {
             setFragment(position);
         } else {
             position = mSteps.size() - 1;
-            position = mSteps.size() - 1;
             Toast.makeText(this, "This is the last step", Toast
                     .LENGTH_SHORT).show();
         }
@@ -92,5 +103,11 @@ public class StepActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(CURRENT_FRAGMENT_POSITION, position);
+        super.onSaveInstanceState(outState);
     }
 }

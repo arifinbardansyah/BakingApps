@@ -32,13 +32,17 @@ import com.google.android.exoplayer2.util.Util;
 
 public class StepFragment extends Fragment {
 
+    public static final String SAVE_CURRENT_VIDEO_POSITION = "currentvideoposition";
+
     private SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mPlayerView;
     private LinearLayout layoutNotAvailable;
 
     private Steps mStep;
 
-    public static StepFragment newInstance(Steps step, int position) {
+    private long currentVideoPosition;
+
+    public static StepFragment newInstance(Steps step) {
 
         Bundle args = new Bundle();
         args.putParcelable(Constants.EXTRA_STEP,step);
@@ -54,6 +58,10 @@ public class StepFragment extends Fragment {
 
         if (getArguments().getParcelable(Constants.EXTRA_STEP)!=null){
             mStep = getArguments().getParcelable(Constants.EXTRA_STEP);
+        }
+
+        if (savedInstanceState!=null){
+            currentVideoPosition = savedInstanceState.getLong(SAVE_CURRENT_VIDEO_POSITION,0);
         }
         mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.playerView);
         TextView tvDescription = (TextView) rootView.findViewById(R.id.tv_description);
@@ -80,6 +88,8 @@ public class StepFragment extends Fragment {
                         getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
                 mExoPlayer.prepare(mediaSource);
                 mExoPlayer.setPlayWhenReady(true);
+
+                mExoPlayer.seekTo(currentVideoPosition);
             } else {
                 mPlayerView.setVisibility(View.GONE);
                 layoutNotAvailable.setVisibility(View.VISIBLE);
@@ -90,10 +100,17 @@ public class StepFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        releasePlayer();
+        releaseAndNullPlayer();
     }
 
     private void releasePlayer() {
+        if (mExoPlayer!=null) {
+            mExoPlayer.stop();
+            mExoPlayer.release();
+        }
+    }
+
+    private void releaseAndNullPlayer() {
         if (mExoPlayer!=null) {
             mExoPlayer.stop();
             mExoPlayer.release();
@@ -101,4 +118,36 @@ public class StepFragment extends Fragment {
         }
     }
 
+    private void playPlayer(){
+        if (mExoPlayer!=null) {
+            mExoPlayer.getPlayWhenReady();
+            mExoPlayer.seekTo(currentVideoPosition);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mExoPlayer!=null) {
+            outState.putLong(SAVE_CURRENT_VIDEO_POSITION, mExoPlayer.getCurrentPosition());
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        releasePlayer();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        releasePlayer();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        playPlayer();
+    }
 }
