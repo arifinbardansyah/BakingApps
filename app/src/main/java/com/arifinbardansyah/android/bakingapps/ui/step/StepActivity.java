@@ -44,7 +44,7 @@ public class StepActivity extends AppCompatActivity {
 
         fragmentManager = getSupportFragmentManager();
 
-        if (savedInstanceState == null){
+        if (savedInstanceState == null) {
             setFragment(position);
         } else {
             position = savedInstanceState.getInt(CURRENT_FRAGMENT_POSITION);
@@ -55,13 +55,11 @@ public class StepActivity extends AppCompatActivity {
     }
 
     private void setFragment(int position) {
-        if (fragment==null) {
-            fragment = StepFragment.newInstance(mSteps.get(position));
+        fragment = StepFragment.newInstance(mSteps.get(position));
 
-            fragmentManager.beginTransaction()
-                    .replace(R.id.step_container, fragment)
-                    .commit();
-        }
+        fragmentManager.beginTransaction()
+                .replace(R.id.step_container, fragment)
+                .commit();
     }
 
     public static void start(Context context, String recipeName, ArrayList<Steps> steps, int
