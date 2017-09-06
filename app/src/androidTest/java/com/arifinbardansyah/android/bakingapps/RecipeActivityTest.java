@@ -20,6 +20,7 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 /**
@@ -46,13 +47,17 @@ public class RecipeActivityTest {
         onView(withId(R.id.rv_recipes)).perform(RecyclerViewActions.actionOnItemAtPosition(0,
                 click()));
 
+        //Test Open Recive Activity
         onView(withId(R.id.text_ingredients)).check(matches(withText("Ingredients :")));
         onView(withId(R.id.text_steps)).check(matches(withText("Steps :")));
 
         onView(withId(R.id.rv_recipe_steps)).perform(RecyclerViewActions.actionOnItemAtPosition(0,
                 click()));
 
+        //Test Open Step Activity
         onView(withId(R.id.text_description)).check(matches(withText("Description :")));
+
+        //Test Extra
         intended(hasExtra(Constants.EXTRA_RECIPE_NAME, RECIPE_NAME));
     }
 

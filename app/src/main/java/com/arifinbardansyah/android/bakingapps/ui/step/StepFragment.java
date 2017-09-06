@@ -67,7 +67,7 @@ public class StepFragment extends Fragment {
         TextView tvDescription = (TextView) rootView.findViewById(R.id.tv_description);
         layoutNotAvailable = (LinearLayout) rootView.findViewById(R.id.layout_video_not_available);
 
-        initializePlayer(mStep.getVideoURL());
+//        initializePlayer(mStep.getVideoURL());
 
         tvDescription.setText(mStep.getDescription());
 
@@ -107,6 +107,7 @@ public class StepFragment extends Fragment {
         if (mExoPlayer!=null) {
             mExoPlayer.stop();
             mExoPlayer.release();
+            currentVideoPosition = mExoPlayer.getCurrentPosition();
         }
     }
 
@@ -142,12 +143,12 @@ public class StepFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        releasePlayer();
+        releaseAndNullPlayer();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        playPlayer();
+        initializePlayer(mStep.getVideoURL());
     }
 }
